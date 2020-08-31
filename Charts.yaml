@@ -1,0 +1,11 @@
+apiVersion: v1
+name: a helm chart quick start demo
+version: 1.0.0
+maintainers: 
+  - name: DamaoShao
+    email: DamaoShao@gmail.com
+    url: https://github.com/DamaoShao/helm_demo
+dependencies:
+  - name: redis
+    version: 10.7.17
+    epository: https://charts.bitnami.com/bitnami
