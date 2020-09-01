@@ -29,4 +29,4 @@ def clear():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=os.getenv("HTTP_PORT", 5432))
+    app.run(host='0.0.0.0', port=os.getenv("HTTP_PORT", 8080))

@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-counter
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.name: {{ .Release.Name }}
+    app.module: {{ .Release.Name }}-counter
+    release: {{ .Release.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app.name: {{ .Release.Name }}
+      app.module: {{ .Release.Name }}-counter
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.name: {{ .Release.Name }}
+        app.module: {{ .Release.Name }}-counter
+        release: {{ .Release.Name }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+      - image: {{ .Values.image }}
+        name: {{ .Release.Name }}-counter
+        imagePullPolicy: Always
+        envFrom:
+          - configMapRef:
+              name: {{ .Release.Name }}-name
+        ports:
+        - containerPort: 8080
+        resources:
+          {{- if eq (typeOf .Values.resources) "string" }}
+          {{ tpl .Values.resources . | nindent 12 | trim }}
+          {{- else }}
+          {{- toYaml .Values.resources | nindent 12 }}
+          {{- end }}
+        livenessProbe:
+          {{- if eq (typeOf .Values.livenessProbe) "string" }}
+          {{ tpl .Values.livenessProbe . | nindent 12 | trim }}
+          {{- else }}
+          {{- toYaml .Values.livenessProbe | nindent 12 }}
+          {{- end }}
+      initContainers:
+        - name: {{ .Release.Name }}-wait-redis
+          image: {{  .Values.initImage }}
+          command: ['sh', '-c', 'while ! nc -z -w 3 {{ .Release.Name }}-redis-master 6379; do echo waiting...; sleep 2; done']

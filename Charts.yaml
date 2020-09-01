@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: v2
 name: a helm chart quick start demo
 version: 1.0.0
 maintainers: 
@@ -9,3 +9,6 @@ dependencies:
   - name: redis
     version: 10.7.17
     epository: https://charts.bitnami.com/bitnami
+  - name: name-maker
+    version: 0.0.1
+    epository: file://.../charts/name-maker
